@@ -24,9 +24,14 @@ public:
 	{
 		return quantity;
 	}
-	virtual void updatePrice(double newPrice)
-	{
-		price = newPrice;
+	virtual void updatePrice(double newPrice) {
+		try {
+			if (newPrice <= 0) throw std::invalid_argument("Price must be greater than zero.");
+			price = newPrice;
+		}
+		catch (const std::exception& e) {
+			std::cout << "Error updating price: " << e.what() << std::endl;
+		}
 	}
 	virtual void updateQuantity(int newQuantity)
 	{
@@ -108,8 +113,14 @@ public:
 	ShoppingCart() : totalAmount(0.0) {}
 
 	void addProduct(const shared_ptr<Product>& product) {
-		products.push_back(product);
-		totalAmount += product->getPrice() * product->getQuantity();
+		try {
+			if (!product) throw std::invalid_argument("Product cannot be null.");
+			products.push_back(product);
+			totalAmount += product->getPrice() * product->getQuantity();
+		}
+		catch (const std::exception& e) {
+			std::cout << "Error adding product to cart: " << e.what() << std::endl;
+		}
 	}
 
 	void removeProduct(const shared_ptr<Product>& product) {
